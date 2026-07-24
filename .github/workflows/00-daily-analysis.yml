@@ -111,13 +111,14 @@ jobs:
           AIHUBMIX_KEY: ${{ secrets.AIHUBMIX_KEY }}
 
           # OpenAI 兼容 API（备选）
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || secrets.DEEPSEEK_API_KEY }}
           OPENAI_API_KEYS: ${{ secrets.OPENAI_API_KEYS }}
-          OPENAI_BASE_URL: ${{ vars.OPENAI_BASE_URL || secrets.OPENAI_BASE_URL }}
-          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || secrets.OPENAI_MODEL }}
-
-          # DeepSeek
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          # DeepSeek 兼容 OpenAI SDK：未配置时默认走 DeepSeek，避免 litellm 打到 api.openai.com
+          OPENAI_BASE_URL: ${{ vars.OPENAI_BASE_URL || secrets.OPENAI_BASE_URL || 'https://api.deepseek.com/v1' }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || secrets.OPENAI_MODEL || 'deepseek-chat' }}
+          
+          # DeepSeek（原生通道优先；与 OPENAI_* 二选一或同时配置）
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || secrets.OPENAI_API_KEY }}
           DEEPSEEK_API_KEYS: ${{ secrets.DEEPSEEK_API_KEYS }}
           
           # Anthropic / Claude
